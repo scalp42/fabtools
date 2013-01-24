@@ -57,6 +57,7 @@ def ppa(name, options=None):
         options = []
     elif isinstance(options, str):
         options = [options]
+    options = " ".join(options)
     source = '%(user)s-%(repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
