@@ -55,7 +55,7 @@ def ppa(name):
     user, repo = name[4:].split('/', 2)
     normalized_repo = re.sub('[.]', '_', repo)
     distrib = distrib_codename()
-    source = '%(user)s-%(normalized_repo)s-%(distrib)s.list' % locals()
+    source = '/etc/apt/sources.list.d/%(user)s-%(normalized_repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
         package('python-software-properties')
