@@ -13,6 +13,7 @@ from fabric.utils import puts
 from fabtools.files import is_file, watch
 from fabtools.deb import *
 import fabtools.require
+import re
 
 
 def source(name, uri, distribution, *components):
@@ -52,12 +53,13 @@ def ppa(name):
     """
     assert name.startswith('ppa:')
     user, repo = name[4:].split('/', 2)
+    normalized_repo = re.sub('[.]', '_', repo)
     distrib = distrib_codename()
-    source = '%(user)s-%(repo)s-%(distrib)s.list' % locals()
+    source = '%(user)s-%(normalized_repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
         package('python-software-properties')
-        sudo('add-apt-repository %s' % name)
+        sudo('add-apt-repository -y %s' % name)
         update_index()
 
 
