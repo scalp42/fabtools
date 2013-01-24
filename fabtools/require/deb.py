@@ -59,7 +59,7 @@ def ppa(name):
 
     if not is_file(source):
         package('python-software-properties')
-        sudo('add-apt-repository -y %s' % name)
+        sudo('add-apt-repository %s' % name)
         update_index()
 
 
