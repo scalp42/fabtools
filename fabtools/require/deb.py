@@ -37,7 +37,7 @@ def source(name, uri, distribution, *components):
         update_index()
 
 
-def ppa(name):
+def ppa(name, options=None):
     """
     Require a `PPA`_ package source.
 
@@ -53,11 +53,15 @@ def ppa(name):
     assert name.startswith('ppa:')
     user, repo = name[4:].split('/', 2)
     distrib = distrib_codename()
+    if options is None:
+        options = []
+    elif isinstance(options, str):
+        options = [options]
     source = '%(user)s-%(repo)s-%(distrib)s.list' % locals()
 
     if not is_file(source):
         package('python-software-properties')
-        sudo('add-apt-repository %s' % name)
+        sudo('add-apt-repository %(options)s %(name)s' % {'options': locals()['options'], 'name': name})
         update_index()
 
 
