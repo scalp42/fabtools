@@ -48,12 +48,14 @@ def is_installed(pkg_name):
         return False
 
 
-def install(packages, update=False, options=None):
+def install(packages, update=False, yes=None, options=None):
     """
     Install one or more packages.
 
     If *update* is ``True``, the package definitions will be updated
     first, using :py:func:`~fabtools.pkg.update_index`.
+
+    Extra *yes* may be passed to ``pkgin`` to validate license if necessary.
 
     Extra *options* may be passed to ``pkgin`` if necessary.
 
@@ -82,7 +84,10 @@ def install(packages, update=False, options=None):
         packages = " ".join(packages)
     options.append("-y")
     options = " ".join(options)
-    sudo('%(manager)s %(options)s in %(packages)s' % locals())
+    if isinstance(yes, str):
+        sudo('yes %(yes)s | %(manager)s %(options)s in %(packages)s' % locals())
+    else:
+        sudo('%(manager)s %(options)s in %(packages)s' % locals())
 
 
 def uninstall(packages, orphan=False, options=None):
