@@ -10,8 +10,9 @@ from __future__ import with_statement
 
 from fabric.utils import puts
 
-from fabtools.files import is_file, watch
 from fabtools.deb import *
+from fabtools.files import is_file, watch
+from fabtools.utils import run_as_root
 import fabtools.require
 import re
 
@@ -42,7 +43,7 @@ def ppa(name, options=None):
     """
     Require a `PPA`_ package source.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -65,7 +66,11 @@ def ppa(name, options=None):
 
     if not is_file(source):
         package('python-software-properties')
+<<<<<<< HEAD
         sudo('add-apt-repository %(options)s %(name)s' % {'options': locals()['options'], 'name': name})
+=======
+        run_as_root('add-apt-repository %s' % name)
+>>>>>>> master
         update_index()
 
 
@@ -73,7 +78,7 @@ def package(pkg_name, update=False):
     """
     Require a deb package to be installed.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -87,7 +92,7 @@ def packages(pkg_list, update=False):
     """
     Require several deb packages to be installed.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -106,7 +111,7 @@ def nopackage(pkg_name):
     """
     Require a deb package to be uninstalled.
 
-    ::
+    Example::
 
         from fabtools import require
 
@@ -120,7 +125,7 @@ def nopackages(pkg_list):
     """
     Require several deb packages to be uninstalled.
 
-    ::
+    Example::
 
         from fabtools import require
 

@@ -1,18 +1,14 @@
 """
 SmartOS packages
-===============
+================
 
 This module provides high-level tools for managing SmartOS packages.
 
 """
-
 from __future__ import with_statement
 
-from fabric.utils import puts
-
-from fabtools.files import is_file
 from fabtools.pkg import *
-import fabtools.require
+
 
 def package(pkg_name, update=False, yes=None):
     """
@@ -26,6 +22,7 @@ def package(pkg_name, update=False, yes=None):
     """
     if not is_installed(pkg_name):
         install(pkg_name, update, yes)
+
 
 def packages(pkg_list, update=False):
     """
@@ -45,6 +42,7 @@ def packages(pkg_list, update=False):
     if pkg_list:
         install(pkg_list, update)
 
+
 def nopackage(pkg_name, orphan=True):
     """
     Require a SmartOS package to be uninstalled.
@@ -57,6 +55,7 @@ def nopackage(pkg_name, orphan=True):
     """
     if is_installed(pkg_name):
         uninstall(pkg_name, orphan)
+
 
 def nopackages(pkg_list, orphan=True):
     """

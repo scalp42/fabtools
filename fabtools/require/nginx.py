@@ -12,10 +12,14 @@ from __future__ import with_statement
 
 from fabric.api import *
 from fabric.colors import red
-from fabtools.files import upload_template, is_link
+
+from fabtools.files import is_link
+from fabtools.nginx import *
 from fabtools.require.deb import package
 from fabtools.require.files import template_file
 from fabtools.require.service import started
+from fabtools.utils import run_as_root
+import fabtools
 
 
 def server():
@@ -30,6 +34,26 @@ def server():
     """
     package('nginx')
     started('nginx')
+
+
+def enabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config exists and reload nginx
+    configuration if needed.
+    """
+    enable(config)
+
+    fabtools.service.reload('nginx')
+
+
+def disabled(config):
+    """
+    Ensure link to /etc/nginx/sites-available/config doesn't exist and reload
+    nginx configuration if needed.
+    """
+    disable(config)
+
+    fabtools.service.reload('nginx')
 
 
 def site(server_name, template_contents=None, template_source=None, enabled=True, check_config=True, **kwargs):
@@ -75,19 +99,19 @@ def site(server_name, template_contents=None, template_source=None, enabled=True
     link_filename = '/etc/nginx/sites-enabled/%s.conf' % server_name
     if enabled:
         if not is_link(link_filename):
-            sudo("ln -s %(config_filename)s %(link_filename)s" % locals())
+            run_as_root("ln -s %(config_filename)s %(link_filename)s" % locals())
 
         # Make sure we don't break the config
         if check_config:
             with settings(hide('running', 'warnings'), warn_only=True):
-                if sudo("nginx -t").return_code > 0:
+                if run_as_root("nginx -t").return_code > 0:
                     print red("Error in %(server_name)s nginx site config (disabling for safety)" % locals())
-                    sudo("rm %(link_filename)s" % locals())
+                    run_as_root("rm %(link_filename)s" % locals())
     else:
         if is_link(link_filename):
-            sudo("rm %(link_filename)s" % locals())
+            run_as_root("rm %(link_filename)s" % locals())
 
-    sudo("/etc/init.d/nginx reload")
+    fabtools.service.reload('nginx')
 
 
 PROXIED_SITE_TEMPLATE = """\
