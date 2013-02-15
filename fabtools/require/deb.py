@@ -66,11 +66,7 @@ def ppa(name, options=None):
 
     if not is_file(source):
         package('python-software-properties')
-<<<<<<< HEAD
-        sudo('add-apt-repository %(options)s %(name)s' % {'options': locals()['options'], 'name': name})
-=======
-        run_as_root('add-apt-repository %s' % name)
->>>>>>> master
+        run_as_root('add-apt-repository %(options)s %(name)s' % {'options': locals()['options'], 'name': name})
         update_index()
 
 
