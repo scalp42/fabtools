@@ -43,8 +43,7 @@ def is_installed(pkg_name):
     """
     Check if a package is installed.
     """
-#    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-    with settings(warn_only=True):
+    with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
         res = run("yes 'y' | pkgin list | egrep -qio \"^%(pkg_name)s\"" % locals())
         if res.succeeded:
             return True
